@@ -94,32 +94,33 @@
 </head>
 <link rel="stylesheet">
 <body oncontextmenu="return false;">
-    <div class="header">
-      <h2>서울시 원격검침 서버 수신용 데이터포맷 NB-IoT</h2>
-      <img src="https://ntmore.kr/images/kor06r-22-0459/common/top_logo_on.png" alt="Logo">
+    <div id="apiheader">
+      <h2>그렉터 API 데이터 확인</h2>
     </div>
-
-    <textarea id="inputData" placeholder="여기에 데이터를 붙여넣으세요 (최소 61자)"></textarea>
-    <br/>
-    <button onclick="parseData()">파싱하기</button>
-    <button id="convertBtn">변환하기</button>
-    <div id="message">
-      해당 데이터를 파싱해주세요
+    <textarea id="grtIdInput" placeholder="IMEI(예: 865343071819914)"></textarea>
+    <span id="urlDisplay" style="position: absolute; margin-left: 5px;"></span><br>
+    <select id="siteIdInput">
+      <option value="gochang">고창군</option>
+      <option value="gunpo">군포시</option>
+      <option value="gimje">김제시</option>
+      <option value="gimhae">김해시</option>
+      <option value="namhae">남해군</option>
+      <option value="busan">부산시</option>
+      <option value="asan">아산시</option>
+      <option value="yangsan">양산시</option>
+      <option value="yeoncheon">연천군</option>
+      <option value="uijeongbu">의정부시</option>
+      <option value="hadong">하동군</option>
+      <option value="haman">함안군</option>
+    </select><br>
+    <div class="input-row">
+      <button id="fetchBtn">데이터 가져오기</button>
+      <button onclick="downloadExcel()" class="excel-icon-btn" title="Export">
+      <img src="https://img.icons8.com/?size=100&id=13654&format=png&color=000000">
+      </button>
+      <pre id="output"></pre>
     </div>
-    <pre id="numericOutput" placeholder="해당 Payload Data 를 붙여넣은 뒤 파싱해주세요"></pre>
     <br>
-    <a href="api.html" target="_blank">API</a>
-    <div id="summaryBox" style="margin-top:20px; background:#fff; padding:10px; border:1px solid #ddd;">
-      <strong><파싱 데이터 요약></strong>
-      <div id="summaryContent">-</div>
-    </div>
-
-    <table id="resultTable">
-      <thead>
-        <tr><th>데이터 키</th><th>원본값(샘플)</th><th>해석</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
   <script src="js/app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
