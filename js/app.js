@@ -1,0 +1,966 @@
+
+
+  document.addEventListener('keydown', function (e) {
+      // F12
+      if (e.keyCode === 123) {
+        e.preventDefault();
+        alert('Error');
+      }
+
+      // Ctrl + Shift + I/J/C
+      if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+        e.preventDefault();
+        alert('Error');
+      }
+
+      // Ctrl + U
+      if (e.ctrlKey && e.keyCode === 85) {
+        e.preventDefault();
+        alert('Error');
+      }
+  });
+
+  let nodesData = [];
+  document.getElementById('fetchBtn').addEventListener('click', async () => {
+    const grtId = document.getElementById('grtIdInput').value.trim();
+    const siteId = document.getElementById('siteIdInput').value.trim();
+    if (!grtId || !siteId) {
+      alert("IMEI를 입력하세요.");
+      return;
+    }
+    const url = `https://dfm-ct.watergrid.kr/api?grtId=${encodeURIComponent(grtId)}&siteId=${encodeURIComponent(siteId)}`;
+
+    const urlDisplay = document.getElementById("urlDisplay");
+    urlDisplay.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
+
+        try {
+          const response = await fetch(url);
+          const result = await response.json();
+
+          nodesData = result.nodes;  // 전역 변수 업데이트
+
+          document.getElementById("output").textContent = JSON.stringify(nodesData, null, 2);
+        } 
+        catch (error) {
+          alert("데이터를 불러오는 중 오류 발생: " + error.message);
+        }
+    });
+    
+    function downloadExcel() {
+      if (!nodesData || Object.keys(nodesData).length === 0) {
+        alert("먼저 데이터를 가져오세요.");
+        return;
+      }
+      
+      // if (!Array.isArray(nodesData)) {
+      //   alert("다운로드할 데이터가 배열 형식이 아닙니다.");
+      //   console.log("nodesData 내용:", nodesData);
+      //   return;
+      // }
+
+      console.log("다운로드 함수 실행됨");
+      console.log("nodesData:", nodesData);
+      
+      // 배열 객체를 시트로 변환
+      const worksheet = XLSX.utils.json_to_sheet([nodesData]);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "NodesData");
+
+      const now = new Date();
+      const dateStr = now.toISOString().slice(0, 19).replace(/[-T:]/g, '');
+
+      XLSX.writeFile(workbook, `nodesData_${dateStr}.xlsx`);
+    }
+
+  /* DataFormat_V1.5 */
+  const fieldMapV1 = [
+    [2, 1, "header"],
+    [2, 3, "length"],
+    [2, 5, "type"],
+    [16, 7, "imei"],
+    [16, 23, "imsi"],
+    [2, 39, "rssi"],
+    [2, 41, "devTemp"],
+    [4, 43, "cid"],
+    [4, 47, "rsrp"],
+    [4, 51, "rsrq"],
+    [4, 55, "snr"],
+    [10, 59, "devNo"],
+    [4, 69, "devFw"],
+    [2, 73, "devVolt"],
+    [8, 75, "meterNo"],
+    [2, 83, "meterType"],
+    [2, 85, "meterCaliber"],
+    [2, 87, "meterStatus"],
+    [2, 89, "msrCycle"],
+    [2, 91, "msrReport"],
+    [2, 93, "year"],
+    [2, 95, "month"],
+    [2, 97, "day"],
+    [2, 99, "hour"],
+    [2, 101, "minute"],
+    [2, 103, "second"],
+    [2, 105, "msrCycle"],
+    [2, 107, "msrCnt"],
+    [2, 109, "msrStdIdx"],
+    [8, 111, "msrStdValue"],
+    [4, 119, "msrOffset 0"],
+    [4, 123, "msrOffset 1"],
+    [4, 127, "msrOffset 2"],
+    [4, 131, "msrOffset 3"],
+    [4, 135, "msrOffset 4"],
+    [4, 139, "msrOffset 5"],
+    [4, 143, "msrOffset 6"],
+    [4, 147, "msrOffset 7"],
+    [4, 151, "msrOffset 8"],
+    [4, 155, "msrOffset 9"],
+    [4, 159, "msrOffset 10"],
+    [4, 163, "msrOffset 11"],
+    [4, 167, "msrOffset 12"],
+    [4, 171, "msrOffset 13"],
+    [4, 175, "msrOffset 14"],
+    [4, 179, "msrOffset 15"],
+    [4, 183, "msrOffset 16"],
+    [4, 187, "msrOffset 17"],
+    [4, 191, "msrOffset 18"],
+    [4, 195, "msrOffset 19"],
+    [4, 199, "msrOffset 20"],
+    [4, 203, "msrOffset 21"],
+    [4, 207, "msrOffset 22"],
+    [4, 211, "msrOffset 23"]
+  ];
+
+  /* DataFormat_V1.5 (Temp) */
+  const fieldMapV2 = [
+    [2, 1, "header"],
+    [2, 3, "length"],
+    [2, 5, "type"],
+    [16, 7, "imei"],
+    [16, 23, "imsi"],
+    [2, 39, "rssi"],
+    [2, 41, "ber"],
+    [4, 43, "cid"],
+    [4, 47, "rsrp"],
+    [4, 51, "rsrq"],
+    [4, 55, "snr"],
+    [10, 59, "vendor_devNo"],
+    [4, 69, "devFw"],
+    [2, 73, "devVolt"],
+    [8, 75, "meterNo"],
+    [2, 83, "meterType"],
+    [2, 85, "meterCaliber"],
+    [2, 87, "meterStatus"],
+    [2, 89, "msrCycle"],
+    [2, 91, "msrReport"],
+    [2, 93, "year"],
+    [2, 95, "month"],
+    [2, 97, "day"],
+    [2, 99, "hour"],
+    [2, 101, "minute"],
+    [2, 103, "second"],
+    [2, 105, "msrCycle"],
+    [2, 107, "msrCnt"],
+    [2, 109, "msrStdIdx"],
+    [8, 111, "msrStdValue"],
+    [4, 119, "msrOffset 0"],
+    [4, 123, "tempValue 0"],
+    [4, 127, "msrOffset 1"],
+    [4, 131, "tempValue 1"],
+    [4, 135, "msrOffset 2"],
+    [4, 139, "tempValue 2"],
+    [4, 143, "msrOffset 3"],
+    [4, 147, "tempValue 3"],
+    [4, 151, "msrOffset 4"],
+    [4, 155, "tempValue 4"],
+    [4, 159, "msrOffset 5"],
+    [4, 163, "tempValue 5"],
+    [4, 167, "msrOffset 6"],
+    [4, 171, "tempValue 6"],
+    [4, 175, "msrOffset 7"],
+    [4, 179, "tempValue 7"],
+    [4, 183, "msrOffset 8"],
+    [4, 187, "tempValue 8"],
+    [4, 191, "msrOffset 9"],
+    [4, 195, "tempValue 9"],
+    [4, 199, "msrOffset 10"],
+    [4, 203, "tempValue 10"],
+    [4, 207, "msrOffset 11"],
+    [4, 211, "tempValue 11"],
+    [4, 215, "msrOffset 12"],
+    [4, 219, "tempValue 12"],
+    [4, 223, "msrOffset 13"],
+    [4, 227, "tempValue 13"],
+    [4, 231, "msrOffset 14"],
+    [4, 235, "tempValue 14"],
+    [4, 239, "msrOffset 15"],
+    [4, 243, "tempValue 15"],
+    [4, 247, "msrOffset 16"],
+    [4, 251, "tempValue 16"],
+    [4, 255, "msrOffset 17"],
+    [4, 259, "tempValue 17"],
+    [4, 263, "msrOffset 18"],
+    [4, 267, "tempValue 18"],
+    [4, 271, "msrOffset 19"],
+    [4, 275, "tempValue 19"],
+    [4, 279, "msrOffset 20"],
+    [4, 283, "tempValue 20"],
+    [4, 287, "msrOffset 21"],
+    [4, 291, "tempValue 21"],
+    [4, 295, "msrOffset 22"],
+    [4, 299, "tempValue 22"],
+    [4, 303, "msrOffset 23"],
+    [4, 307, "tempValue 23"]
+  ];
+
+  /* DataFormat_V1.5 (Temp + Cable) */
+  const fieldMapV3 = [
+    [2, 1, "header"],
+    [2, 3, "length"],
+    [2, 5, "type"],
+    [16, 7, "imei"],
+    [16, 23, "imsi"],
+    [2, 39, "rssi"],
+    [2, 41, "ber"],
+    [4, 43, "cid"],
+    [4, 47, "rsrp"],
+    [4, 51, "rsrq"],
+    [4, 55, "snr"],
+    [10, 59, "devNo"],
+    [4, 69, "devFw"],
+    [2, 73, "devVolt"],
+    [8, 75, "meterNo"],
+    [2, 83, "meterType"],
+    [2, 85, "meterCaliber"],
+    [2, 87, "meterStatus"],
+    [2, 89, "msrCycle"],
+    [2, 91, "msrReport"],
+    [2, 93, "year"],
+    [2, 95, "month"],
+    [2, 97, "day"],
+    [2, 99, "hour"],
+    [2, 101, "minute"],
+    [2, 103, "second"],
+    [2, 105, "msrCycle"],
+    [2, 107, "msrCnt"],
+    [2, 109, "msrStdIdx"],
+    [8, 111, "msrStdValue"],
+    [4, 119, "msrOffset 0"],
+    [4, 123, "tempValue 0"],
+    [4, 127, "msrOffset 1"],
+    [4, 131, "tempValue 1"],
+    [4, 135, "msrOffset 2"],
+    [4, 139, "tempValue 2"],
+    [4, 143, "msrOffset 3"],
+    [4, 147, "tempValue 3"],
+    [4, 151, "msrOffset 4"],
+    [4, 155, "tempValue 4"],
+    [4, 159, "msrOffset 5"],
+    [4, 163, "tempValue 5"],
+    [4, 167, "msrOffset 6"],
+    [4, 171, "tempValue 6"],
+    [4, 175, "msrOffset 7"],
+    [4, 179, "tempValue 7"],
+    [4, 183, "msrOffset 8"],
+    [4, 187, "tempValue 8"],
+    [4, 191, "msrOffset 9"],
+    [4, 195, "tempValue 9"],
+    [4, 199, "msrOffset 10"],
+    [4, 203, "tempValue 10"],
+    [4, 207, "msrOffset 11"],
+    [4, 211, "tempValue 11"],
+    [4, 215, "msrOffset 12"],
+    [4, 219, "tempValue 12"],
+    [4, 223, "msrOffset 13"],
+    [4, 227, "tempValue 13"],
+    [4, 231, "msrOffset 14"],
+    [4, 235, "tempValue 14"],
+    [4, 239, "msrOffset 15"],
+    [4, 243, "tempValue 15"],
+    [4, 247, "msrOffset 16"],
+    [4, 251, "tempValue 16"],
+    [4, 255, "msrOffset 17"],
+    [4, 259, "tempValue 17"],
+    [4, 263, "msrOffset 18"],
+    [4, 267, "tempValue 18"],
+    [4, 271, "msrOffset 19"],
+    [4, 275, "tempValue 19"],
+    [4, 279, "msrOffset 20"],
+    [4, 283, "tempValue 20"],
+    [4, 287, "msrOffset 21"],
+    [4, 291, "tempValue 21"],
+    [4, 295, "msrOffset 22"],
+    [4, 299, "tempValue 22"],
+    [4, 303, "msrOffset 23"],
+    [4, 307, "tempValue 23"]
+  ];
+
+  /* DataFormat_V1.7 */
+  const fieldMapV4 = [
+    [2, 1, "header"],
+    [2, 3, "length"],
+    [2, 5, "type"],
+    [16, 7, "imei"],
+    [16, 23, "imsi"],
+    [2, 39, "rssi"],
+    [2, 41, "ber"],
+    [8, 43, "cid"],
+    [4, 51, "rsrp"],
+    [4, 55, "rsrq"],
+    [4, 59, "snr"],
+    [10, 63, "devNo"],
+    [4, 73, "devFw"],
+    [2, 77, "devVolt"],
+    [8, 79, "meterNo"],
+    [2, 87, "meterType"],
+    [2, 89, "meterCaliber"],
+    [2, 91, "meterStatus"],
+    [2, 93, "msrCycle"],
+    [2, 95, "msrReport"],
+    [2, 97, "year"],
+    [2, 99, "month"],
+    [2, 101, "day"],
+    [2, 103, "hour"],
+    [2, 105, "minute"],
+    [2, 107, "second"],
+    [2, 109, "msrCycle"],
+    [2, 111, "msrCnt"],
+    [2, 113, "msrStdIdx"],
+    [8, 115, "mValue 0"],
+    [8, 123, "mValue 1"],
+    [8, 131, "mValue 2"],
+    [8, 139, "mValue 3"],
+    [8, 147, "mValue 4"],
+    [8, 155, "mValue 5"],
+    [8, 163, "mValue 6"],
+    [8, 171, "mValue 7"],
+    [8, 179, "mValue 8"],
+    [8, 187, "mValue 9"],
+    [8, 195, "mValue 10"],
+    [8, 203, "mValue 11"],
+    [8, 211, "mValue 12"],
+    [8, 219, "mValue 13"],
+    [8, 227, "mValue 14"],
+    [8, 235, "mValue 15"],
+    [8, 243, "mValue 16"],
+    [8, 251, "mValue 17"],
+    [8, 259, "mValue 18"],
+    [8, 267, "mValue 19"],
+    [8, 275, "mValue 20"],
+    [8, 283, "mValue 21"],
+    [8, 291, "mValue 22"],
+    [8, 299, "mValue 23"]
+  ];
+
+  /* DataFormat_V1.8 */
+  const fieldMapV5 = [
+    [2, 1, "header"],
+    [2, 3, "length"],
+    [2, 5, "type"],
+    [16, 7, "imei"],
+    [16, 23, "imsi"],
+    [2, 39, "rssi"],
+    [2, 41, "ber"],
+    [8, 43, "cid"],
+    [4, 51, "rsrp"],
+    [4, 55, "rsrq"],
+    [4, 59, "snr"],
+    [10, 63, "devNo"],
+    [4, 73, "devFw"],
+    [2, 77, "devVolt"],
+    [8, 79, "meterNo"],
+    [2, 87, "meterType"],
+    [2, 89, "meterCaliber"],
+    [2, 91, "meterStatus1"],
+    [2, 93, "meterStatus2"],
+    [2, 95, "timeInterval"],
+    [2, 97, "msrCycle"],
+    [2, 99, "msrReport"],
+    [2, 101, "year"],
+    [2, 103, "month"],
+    [2, 105, "day"],
+    [2, 107, "hour"],
+    [2, 109, "minute"],
+    [2, 111, "second"],
+    [2, 113, "msrCycle"],
+    [2, 115, "msrCnt"],
+    [2, 117, "msrStdIdx"],
+    [8, 119, "mValue 0"],
+    [8, 127, "mValue 1"],
+    [8, 135, "mValue 2"],
+    [8, 143, "mValue 3"],
+    [8, 151, "mValue 4"],
+    [8, 159, "mValue 5"],
+    [8, 167, "mValue 6"],
+    [8, 175, "mValue 7"],
+    [8, 183, "mValue 8"],
+    [8, 191, "mValue 9"],
+    [8, 199, "mValue 10"],
+    [8, 207, "mValue 11"],
+    [8, 215, "mValue 12"],
+    [8, 223, "mValue 13"],
+    [8, 231, "mValue 14"],
+    [8, 239, "mValue 15"],
+    [8, 247, "mValue 16"],
+    [8, 255, "mValue 17"],
+    [8, 263, "mValue 18"],
+    [8, 271, "mValue 19"],
+    [8, 279, "mValue 20"],
+    [8, 287, "mValue 21"],
+    [8, 295, "mValue 22"],
+    [8, 303, "mValue 23"]
+  ];
+
+  /* DataFormat_V2.0 */
+  const fieldMapV6 = [
+    [2, 1, "header"],
+    [2, 3, "length"],
+    [2, 5, "type"],
+    [16, 7, "imei"],
+    [16, 23, "imsi"],
+    [2, 39, "rssi"],
+    [2, 41, "ber"],
+    [8, 43, "cid"],
+    [4, 51, "rsrp"],
+    [4, 55, "rsrq"],
+    [4, 59, "snr"],
+    [10, 63, "devNo"],
+    [4, 73, "devFw"],
+    [2, 77, "devVolt"],
+    [8, 79, "meterNo"],
+    [2, 87, "meterType"],
+    [2, 89, "meterCaliber"],
+    [2, 91, "meterStatus"],
+    [2, 93, "manufacturerCode"],
+    [2, 95, "tempInfo"],
+    [2, 97, "correctionInfo"],
+    [4, 99, "Reserved"],
+    [2, 103, "timeInterval"],
+    [2, 105, "msrCycle"],
+    [2, 107, "msrReport"],
+    [2, 109, "year"],
+    [2, 111, "month"],
+    [2, 113, "day"],
+    [2, 115, "hour"],
+    [2, 117, "minute"],
+    [2, 119, "second"],
+    [2, 121, "msrCycle"],
+    [2, 123, "msrCnt"],
+    [2, 125, "msrStdIdx"],
+    [8, 127, "mValue 0"],
+    [8, 135, "mValue 1"],
+    [8, 143, "mValue 2"],
+    [8, 151, "mValue 3"],
+    [8, 159, "mValue 4"],
+    [8, 167, "mValue 5"],
+    [8, 175, "mValue 6"],
+    [8, 183, "mValue 7"],
+    [8, 191, "mValue 8"],
+    [8, 199, "mValue 9"],
+    [8, 207, "mValue 10"],
+    [8, 215, "mValue 11"],
+    [8, 223, "mValue 12"],
+    [8, 231, "mValue 13"],
+    [8, 239, "mValue 14"],
+    [8, 247, "mValue 15"],
+    [8, 255, "mValue 16"],
+    [8, 263, "mValue 17"],
+    [8, 271, "mValue 18"],
+    [8, 279, "mValue 19"],
+    [8, 287, "mValue 20"],
+    [8, 295, "mValue 21"],
+    [8, 303, "mValue 22"],
+    [8, 311, "mValue 23"]
+  ];
+
+    /* GS2.0 DataFormat */
+  const fieldMapV7 = [
+    [2, 1, "header"],
+    [2, 3, "length"],
+    [2, 5, "type"],
+    [16, 7, "imei"],
+    [16, 23, "imsi"],
+    [2, 39, "rssi"],
+    [2, 41, "ber"],
+    [4, 43, "cid"],
+    [4, 47, "rsrp"],
+    [4, 51, "rsrq"],
+    [4, 55, "snr"],
+    [10, 59, "devNo"],
+    [4, 69, "devFw"],
+    [2, 73, "devVolt"],
+    [8, 75, "meterNo"],
+    [2, 83, "meterType"],
+    [2, 85, "meterCaliber"],
+    [2, 87, "meterStatus"],
+    [2, 89, "msrCycle"],
+    [2, 91, "msrReport"],
+    [2, 93, "year"],
+    [2, 95, "month"],
+    [2, 97, "day"],
+    [2, 99, "hour"],
+    [2, 101, "minute"],
+    [2, 103, "second"],
+    [2, 105, "msrCycle"],
+    [2, 107, "msrCnt"],
+    [2, 109, "msrStdIdx"],
+    [8, 111, "msrStdValue"],
+    [4, 119, "msrOffset 0"],
+    [4, 123, "msrOffset 1"],
+    [4, 127, "msrOffset 2"],
+    [4, 131, "msrOffset 3"],
+    [4, 135, "msrOffset 4"],
+    [4, 139, "msrOffset 5"],
+    [4, 143, "msrOffset 6"],
+    [4, 147, "msrOffset 7"],
+    [4, 151, "msrOffset 8"],
+    [4, 155, "msrOffset 9"],
+    [4, 159, "msrOffset 10"],
+    [4, 163, "msrOffset 11"],
+    [4, 167, "msrOffset 12"],
+    [4, 171, "msrOffset 13"],
+    [4, 175, "msrOffset 14"],
+    [4, 179, "msrOffset 15"],
+    [4, 183, "msrOffset 16"],
+    [4, 187, "msrOffset 17"],
+    [4, 191, "msrOffset 18"],
+    [4, 195, "msrOffset 19"],
+    [4, 199, "msrOffset 20"],
+    [4, 203, "msrOffset 21"],
+    [4, 207, "msrOffset 22"],
+    [4, 211, "msrOffset 23"],
+    [2, 215, "devModel"],
+    [2, 217, "devTemp"],
+    [2, 219, "afCnt"],
+    [2, 221, "sfCnt"],
+    [2, 223, "devFOTA"],
+    [2, 225, "devBank"],
+    [2, 227, "msrDisperTime"],
+    [2, 229, "circuit"],
+    [2, 231, "magnetic"],
+  ];
+
+  const headerMap = {
+    "A3": "서울시 데이터포맷[V1.5]",
+    "a3": "서울시 데이터포맷[V1.5]",
+    "A4": "서울시 데이터포맷[V1.7]",
+    "a4": "서울시 데이터포맷[V1.7]",
+    "A5": "서울시 데이터포맷[V1.8]",
+    "a5": "서울시 데이터포맷[V1.8]",
+    "B1": "서울시 데이터포맷[V2.0]",
+    "b1": "서울시 데이터포맷[V2.0]"
+  };
+
+  const typeMap = {
+    "70": "(Default Version)",
+    "71": "(GS2.0 Version)",
+    "75": "(Temp Version)",
+    "76": "(Temp + Cable Version)"
+  };
+
+  const caliberTypeMap = {
+    "0": "검침이상",
+    "1": "15mm",
+    "2": "20mm",
+    "3": "25mm",
+    "4": "32mm",
+    "5": "40mm",
+    "6": "50mm",
+    "7": "65mm",
+    "8": "80mm",
+    "9": "100mm",
+    "A": "125mm",
+    "B": "150mm",
+    "C": "200mm"
+    // 필요에 따라 더 추가
+  };
+
+  const meterDivisionMap = {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+  };
+
+  const bitEventMap = {
+    0: "예비",
+    1: "예비",
+    2: "저전압 경보",
+    3: "예비",
+    4: "예비",
+    5: "누수",
+    6: "역류",
+    7: "과부하"
+  };
+
+  document.getElementById("convertBtn").addEventListener("click", () => {
+    const raw = document.getElementById("inputData").value.trim();
+    const message = document.getElementById("message");
+    const output = document.getElementById("numericOutput");
+
+    try {
+      const cleaned = raw.replace(/[\[\]]/g, "").trim();
+      const arr = cleaned.split(/[\s,]+/).map(v => parseInt(v, 10)).filter(v => !isNaN(v));
+
+      if (arr.length === 0) throw new Error("No valid numbers");
+      const hexValues = arr.map(v => (v < 0 ? 256 + v : v).toString(16).padStart(2, "0"));
+      const result = hexValues.join("").toUpperCase();
+
+      output.textContent = result;
+      message.style.display = "block";
+
+    } catch (e) {
+      alert("[1,2,3,...] 형태로 넣어주세요.");      
+      message.style.display = "none";
+    }
+  });
+
+  function parseData() {
+    const data = document.getElementById("inputData").value.trim();
+    const tbody = document.querySelector("#resultTable tbody");
+    tbody.innerHTML = "";
+
+  if (data.length < 61 || data.length > 401) {
+    alert("데이터는 62자 이상 400자 이하이어야 합니다.");
+    return;
+  }
+
+  // header (2글자)와 type (2글자) 추출
+  const headerHex = data.slice(0, 2).toUpperCase();
+  const typeHex = data.slice(4, 6).toUpperCase();
+
+  console.log("Header:", headerHex);
+  console.log("Type:", typeHex);
+
+  let fieldMap;
+
+  // header + type 값으로 분기
+  if (headerHex === "A3" && typeHex === "70") {
+    fieldMap = fieldMapV1;
+  } else if (headerHex === "A3" && typeHex === "75") {
+    fieldMap = fieldMapV2;
+  } else if (headerHex === "A3" && typeHex === "76") {
+    fieldMap = fieldMapV3;
+  } else if (headerHex === "A4" && typeHex === "70") {
+    fieldMap = fieldMapV4;
+  } else if (headerHex === "A5" && typeHex === "70") {
+    fieldMap = fieldMapV5;
+  } else if (headerHex === "B1" && typeHex === "70") {
+    fieldMap = fieldMapV6;
+  } else if (headerHex === "A3" && typeHex === "71") {
+    fieldMap = fieldMapV7;
+  } else {
+      alert(`지원하지 않는 데이터포맷입니다.`);
+    return;
+  }
+
+  const swapAndDexFields = [
+    "rssi", "devTemp", "cid", "rsrp", "rsrq", "snr", 
+    "year", "month", "day", "hour", "minute", "second", "msrCnt",
+    "msrStdValue", "msrOffset", "mValue", "tempValue"
+  ];
+
+  const checksumValue = data.slice(-2);
+  const dataWithoutChecksum = data.slice(0, -2);
+
+  let yearVal = "", monthVal = "", dayVal = "";
+  let hourVal = "", minuteVal = "", secondVal = "";
+  let msrStdValueVal = "";
+  let division = "";
+  let prevOffsetResult = null;      // 이전 msrOffset 결과 저장
+
+  fieldMap.forEach(([length, start, fieldName]) => {
+    const startIdx = start - 1;
+    const endIdx = startIdx + length;
+    if (endIdx > dataWithoutChecksum.length) return;
+    const rawValue = data.slice(startIdx, endIdx);
+    let displayValue = rawValue;
+
+    if (swapAndDexFields.some(prefix => fieldName.startsWith(prefix))) {
+      if (rawValue.length >= 4) {
+        const swapped = rawValue.match(/../g).reverse().join("");
+        displayValue = parseInt(swapped, 16).toString();
+      } else {
+        displayValue = parseInt(rawValue, 16).toString();
+      }
+    }
+
+    if (fieldName === "imei" && rawValue.length >= 16) {
+    let chars = rawValue.split("");
+    chars.splice(15, 1); // 16번째 문자 제거
+    displayValue = chars.join("");
+    }
+
+    if (fieldName === "imsi" && rawValue.length >= 16) {
+      // 문자열을 배열로 변환
+      let chars = rawValue.split("");
+      // splice로 뒤에서부터 삭제 (앞부터 하면 인덱스가 밀립니다)
+      chars.splice(15, 1); // 16번째 문자 제거
+      displayValue = chars.join("");
+    }
+
+    if (fieldName === "devNo" && rawValue.length >= 10) {
+      // 문자열을 배열로 변환
+      let chars = rawValue.split("");
+      // splice로 뒤에서부터 삭제 (앞부터 하면 인덱스가 밀립니다)
+      chars.splice(2, 1);
+      chars.splice(1, 1);
+      chars.splice(0, 1);
+      displayValue = chars.join("");
+    }
+
+    if (fieldName === "meterCaliber") {
+      const firstCaliber = rawValue.charAt(0);
+      displayValue = caliberTypeMap[firstCaliber] || `알 수 없음 (${firstCaliber})`;
+      const secondCaliber = rawValue.charAt(1);
+      division = meterDivisionMap[secondCaliber];
+    }
+
+    if (fieldName === "meterStatus") {
+      const num = parseInt(rawValue, 16);  // HEX → 10진수
+      if (!isNaN(num)) {
+        const binaryStr = num.toString(2).padStart(8, '0');  // 8비트 변환
+        const events = [];
+
+        for (let i = 0; i < 8; i++) {
+          if (binaryStr.charAt(7 - i) === '1') {
+            events.push(bitEventMap[i]);
+          }
+        }
+
+        const eventText = events.length > 0 ? events.join(", ") : "이벤트 없음";
+        displayValue = `${eventText}`;
+      } else {
+        displayValue = "올바르지 않은 HEX 값";
+      }
+    }
+
+
+    if (fieldName.trim() === "devVolt") {
+    // devVolt는 HEX 2자리 → DEX → 소수점 한자리
+      if (rawValue.length === 2) {
+        // 예: 36 → 54 → 5.4
+        const dex = parseInt(rawValue, 16);
+        displayValue = (dex / 10).toFixed(1);
+        displayValue = `${displayValue}V`;
+      }
+    }
+
+    if (fieldName === "header") {
+      displayValue = headerMap[rawValue] || rawValue;
+    }
+
+    if (fieldName === "type") {
+      displayValue = typeMap[rawValue] || rawValue;
+    }
+
+    if (fieldName.trim() === "meterNo" && rawValue.length >= 8) {
+      displayValue = rawValue.slice(0, 2) + "-" + rawValue.slice(2, 8);
+    }
+
+    if (fieldName === "devFw" && rawValue.length >= 4) {
+      displayValue = 'V'+ rawValue[1] + rawValue[3];
+    }
+    
+    // 스왑 및 DEX 변환 대상
+    if (swapAndDexFields.some(prefix => fieldName.startsWith(prefix))) {
+    if (rawValue.length >= 4) {
+      // 2바이트 이상이면 바이트 순서 스왑 후 DEX
+      const swapped = rawValue.match(/../g).reverse().join("");
+      displayValue = parseInt(swapped, 16).toString();
+    } 
+    else {
+      // 1바이트 HEX → DEX 변환
+      displayValue = parseInt(rawValue, 16).toString();
+    }
+    if (fieldName.startsWith("devTemp")) {
+      const intValue = parseInt(rawValue, 16);
+      if (intValue >= 128) {
+        displayValue = `-${intValue - 128 + 1}℃`;
+      } else {
+        displayValue = intValue.toString() + '℃';
+      }
+    }
+    if (fieldName === "meterType") {
+      displayValue = division;
+      displayValue = `-${displayValue}`;
+    }
+    if (fieldName === "rssi") {
+      displayValue = `-${displayValue}`;
+    }
+    if (fieldName === "rsrp") {
+      displayValue = `-${displayValue}`;
+    }
+    if (fieldName === "rsrq") {
+      displayValue = `-${displayValue}`;
+    }
+    if (fieldName === "snr") {
+      displayValue = `${displayValue}`;
+    }
+    if (fieldName === "year") {
+      msrOffsetyearVal = displayValue;
+      displayValue = `20${displayValue}년`;
+      yearVal = displayValue;
+    }
+    if (fieldName === "month") {
+      msrOffsetmonthVal = displayValue;
+      displayValue = displayValue + "월";
+      monthVal = displayValue;
+    }
+    if (fieldName === "day") {
+      msrOffsetdayVal = displayValue;
+      displayValue = displayValue + "일";
+      dayVal = displayValue;
+    }
+    if (fieldName === "hour") {
+      msrOffsethourVal = displayValue;
+      displayValue = displayValue + "시";
+      hourVal = displayValue;
+    }
+    if (fieldName === "minute") {
+      msrOffsetminuteVal = displayValue;
+      displayValue = displayValue + "분";
+      minuteVal = displayValue;
+    }
+    if (fieldName === "second") {
+      msrOffsetsecondVal = displayValue;
+      displayValue = displayValue + "초";
+      secondVal = displayValue;
+    }
+    if (fieldName === "msrStdValue") {
+      if (isFailValue(rawValue)) { 
+        displayValue = "검침이상";
+      } else {
+        let numericValue = Number(displayValue);
+        if (division === 1) numericValue /= 10;
+        else if (division === 2) numericValue /= 100;
+        else if (division === 3) numericValue /= 1000;
+        else if (division === 4) numericValue /= 10000;
+        else if (division === 5) numericValue /= 100000;
+        displayValue = numericValue + " ton";
+        msrStdValueVal = numericValue;
+        prevOffsetResult = numericValue;
+      }
+      msrStdValueVal = displayValue;
+    }
+    if (fieldName.startsWith("msrOffset") && displayValue.length >= 1) {
+      if (isFailValue(rawValue)) { 
+        displayValue = "검침이상";
+      } else {
+        let offsetValue = Number(displayValue);
+        if (division === 1) offsetValue /= 10;
+        else if (division === 2) offsetValue /= 100;
+        else if (division === 3) offsetValue /= 1000;
+        else if (division === 4) offsetValue /= 10000;
+        else if (division === 5) offsetValue /= 100000;
+
+        if (typeof prevOffsetResult === "number") {
+          const result = prevOffsetResult - offsetValue;
+          const offsetIndex = parseInt(fieldName.replace("msrOffset", ""), 10) || 0;
+          let baseDate = new Date(
+            2000 + Number(msrOffsetyearVal),
+            Number(msrOffsetmonthVal) - 1,
+            Number(msrOffsetdayVal),
+            Number(msrOffsethourVal),
+            Number(msrOffsetminuteVal),
+            Number(msrOffsetsecondVal)
+          );
+
+          baseDate.setHours(baseDate.getHours() - offsetIndex);
+
+          const year = baseDate.getFullYear();
+          const month = String(baseDate.getMonth() + 1).padStart(2, "0");
+          const day = String(baseDate.getDate()).padStart(2, "0");
+          const hour = String(baseDate.getHours()).padStart(2, "0");
+          const minute = String(baseDate.getMinutes()).padStart(2, "0");
+          const second = String(baseDate.getSeconds()).padStart(2, "0");
+
+          displayValue = `${result.toFixed(3)} ton (-${offsetValue}) <br> ${year}-${month}-${day} ${hour}:${minute}:${second}`;
+          prevOffsetResult = result;
+        } else {
+          displayValue = "계산 불가";
+        }
+      }
+    }
+
+    if (fieldName.startsWith("mValue") && displayValue.length >= 1) {
+      if (isFailValue(rawValue)) { 
+      displayValue = "검침이상";
+        } else {
+          let numericValue = Number(displayValue);
+          if (division === 1) numericValue /= 10;
+          else if (division === 2) numericValue /= 100;
+          else if (division === 3) numericValue /= 1000;
+          else if (division === 4) numericValue /= 10000;
+          else if (division === 5) numericValue /= 100000;
+
+          const offsetIndex = parseInt(fieldName.replace("mValue", ""), 10) || 0;
+          let baseDate = new Date(
+            2000 + Number(msrOffsetyearVal),
+            Number(msrOffsetmonthVal) - 1,
+            Number(msrOffsetdayVal),
+            Number(msrOffsethourVal),
+            Number(msrOffsetminuteVal),
+            Number(msrOffsetsecondVal)
+          );
+
+          baseDate.setHours(baseDate.getHours() - offsetIndex);
+
+          const year = baseDate.getFullYear();
+          const month = String(baseDate.getMonth() + 1).padStart(2, "0");
+          const day = String(baseDate.getDate()).padStart(2, "0");
+          const hour = String(baseDate.getHours()).padStart(2, "0");
+          const minute = String(baseDate.getMinutes()).padStart(2, "0");
+          const second = String(baseDate.getSeconds()).padStart(2, "0");
+
+          displayValue = `${numericValue} ton <br> ${year}-${month}-${day} ${hour}:${minute}:${second}`;
+
+          if (msrStdValueVal === "") {
+            msrStdValueVal = `${numericValue} ton`;
+          }
+        }
+    }
+    else if (fieldName.startsWith("tempValue")) {
+      if (rawValue.length === 4) {
+        const upperHex = rawValue.slice(0, 2); // 상위 바이트
+        const lowerHex = rawValue.slice(2, 4); // 하위 바이트
+
+        // Little Endian: 하위 + 상위 바이트 순서
+        const swappedHex = lowerHex + upperHex;        // 리틀 에디안 순서 변환
+        let tempRaw = parseInt(swappedHex, 16);        // HEX 변환 
+
+        // 2바이트 signed 변환
+        if (tempRaw > 0x0500) {
+          tempRaw = -(tempRaw - 0x0500); // signed 변환: 0x0500(DEX 1280) 이상이면 음수
+        }
+        const tempC = tempRaw / 10;                    // 10으로 나눠서 ℃
+        displayValue = tempC + "℃";
+      } else {
+        displayValue = rawValue;
+      }
+    }
+    }
+
+    function isFailValue(value) {
+    if (!value) return false;
+    if (!(value.length === 4 || value.length === 8)) return false;
+    return /^[fF]+$/.test(value);
+    }
+
+    const row = document.createElement("tr");
+    row.innerHTML = 
+      `<td>${fieldName}</td>
+      <td>${rawValue}</td>
+      <td>${displayValue}</td>`;
+    tbody.appendChild(row);
+    });
+
+    document.getElementById("summaryContent").innerHTML =
+      `<p><strong>검침 값:</strong> ${msrStdValueVal}</p>` +
+      `<p><strong>데이터 전송 시간:</strong> ${yearVal} ${monthVal} ${dayVal} ${hourVal} ${minuteVal} ${secondVal}</p>`;
+
+      const checksumRow = document.createElement("tr");
+        checksumRow.innerHTML = `<td>checksum</td><td>${checksumValue}</td><td>${checksumValue}</td>`;
+        tbody.appendChild(checksumRow);
+  }
