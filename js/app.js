@@ -1,21 +1,21 @@
 document.addEventListener('keydown', function (e) {
-    // F12
-    if (e.keyCode === 123) {
-      e.preventDefault();
-      alert('Error');
-    }
+  // F12
+  if (e.keyCode === 123) {
+    e.preventDefault();
+    alert('Error');
+  }
 
-    // Ctrl + Shift + I/J/C
-    if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
-      e.preventDefault();
-      alert('Error');
-    }
+  // Ctrl + Shift + I/J/C
+  if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+    e.preventDefault();
+    alert('Error');
+  }
 
-    // Ctrl + U
-    if (e.ctrlKey && e.keyCode === 85) {
-      e.preventDefault();
-      alert('Error');
-    }
+  // Ctrl + U
+  if (e.ctrlKey && e.keyCode === 85) {
+    e.preventDefault();
+    alert('Error');
+  }
 });
 
 /* DataFormat_V1.5 */
