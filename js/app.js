@@ -906,7 +906,7 @@ fieldMap.forEach(([length, start, fieldName]) => {
     `<p><strong>검침 값:</strong> ${msrStdValueVal}</p>` +
     `<p><strong>데이터 전송 시간:</strong> ${yearVal} ${monthVal} ${dayVal} ${hourVal} ${minuteVal} ${secondVal}</p>`;
 
-    const checksumRow = document.createElement("tr");
-      checksumRow.innerHTML = `<td>checksum</td><td>${checksumValue}</td><td>${checksumValue}</td>`;
-      tbody.appendChild(checksumRow);
+  const checksumRow = document.createElement("tr");
+    checksumRow.innerHTML = `<td>checksum</td><td>${checksumValue}</td><td>${checksumValue}</td>`;
+    tbody.appendChild(checksumRow);
 }
