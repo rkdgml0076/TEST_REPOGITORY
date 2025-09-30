@@ -76,17 +76,35 @@
     width: 55px;               /* 이미지 크기 줄이기 */
     height: 55px;
     margin: 5px;
-   }
-   #message {
-    display:none; 
-    font-size:18px; 
-    font-weight:bold; 
-    margin-top:10px; 
-    color: #000;
-   }
-   a {
-    text-decoration: none;
-    color: #000;
-    font-size: 14px;
-    background-color: #ddd;
-   }
+    }
+    #message {
+      display:none; 
+      font-size:18px; 
+      font-weight:bold; 
+      margin-top:10px; 
+      color: #000;
+    }
+    .btn-primary{
+      display: inline-block;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      background: linear-gradient(180deg, #ddd 0%, #ccc 100%);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(21, 101, 216, 0.12);
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    }
+    .btn-primary:hover{ 
+      /* transform: translateY(-2px);  */
+      filter: brightness(.98); 
+    }
+    .btn-primary:active{ 
+      transform: translateY(0); 
+      box-shadow: 0 4px 12px rgba(21,101,216,0.14); 
+    }
+    .btn-primary:focus{ 
+      outline: none; box-shadow: 0 0 0 6px rgba(21,101,216,0.14); 
+    }

@@ -9,7 +9,7 @@
 <body oncontextmenu="return false;">
     <div class="header">
       <h2>서울시 원격검침 서버 수신용 데이터포맷 NB-IoT</h2>
-      <img src="https://ntmore.kr/images/kor06r-22-0459/common/top_logo_on.png" alt="Logo">
+      <a href="https://ntmore.kr/"><img src="https://ntmore.kr/images/kor06r-22-0459/common/top_logo_on.png" alt="Logo"></a>
     </div>
 
     <textarea id="inputData" placeholder="여기에 데이터를 붙여넣으세요 (최소 61자)"></textarea>
@@ -21,7 +21,7 @@
     </div>
     <pre id="numericOutput" placeholder="해당 Payload Data 를 붙여넣은 뒤 파싱해주세요"></pre>
     <br>
-    <a href="api.html" target="_blank">API</a>
+    <a class="btn-primary" href="api.html" target="_blank" rel="noopener noreferrer" role="button" aria-pressed="false">API</a>
     <div id="summaryBox" style="margin-top:20px; background:#fff; padding:10px; border:1px solid #ddd;">
       <strong><파싱 데이터 요약></strong>
       <div id="summaryContent">-</div>
@@ -35,6 +35,5 @@
     </table>
   <script src="js/app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
 </body>
 </html>
