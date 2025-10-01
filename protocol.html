@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>DataFormatCheck_1.5.1</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<link rel="stylesheet">
+<body oncontextmenu="return false;">
+    <div class="header">
+      <h2>서울시 원격검침 서버 수신용 데이터포맷 NB-IoT</h2>
+      <a href="https://ntmore.kr/"><img src="https://ntmore.kr/images/kor06r-22-0459/common/top_logo_on.png" alt="Logo"></a>
+    </div>
+
+    <textarea id="inputData" placeholder="여기에 데이터를 붙여넣으세요 (최소 61자)"></textarea>
+    <br/>
+    <button onclick="parseData()">파싱하기</button>
+    <button id="convertBtn">변환하기</button>
+    <div id="message">
+      해당 데이터를 파싱해주세요
+    </div>
+    <pre id="numericOutput" placeholder="해당 Payload Data 를 붙여넣은 뒤 파싱해주세요"></pre>
+    <br>
+    <div id="summaryBox" style="margin-top:20px; background:#fff; padding:10px; border:1px solid #ddd;">
+      <strong><파싱 데이터 요약></strong>
+      <div id="summaryContent">-</div>
+    </div>
+
+    <table id="resultTable">
+      <thead>
+        <tr><th>데이터 키</th><th>원본값(샘플)</th><th>해석</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  <script src="js/app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</body>
+</html>

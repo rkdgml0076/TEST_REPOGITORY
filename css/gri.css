@@ -7,7 +7,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      /* padding: 10px 20px; */
       background-color: #f7f7f7;
     }
     .header img {
@@ -17,11 +16,7 @@
     }
     .header h2 {
       margin: 0;
-      font-size: 30px;
-    }
-    h3 {
-      margin: 0;
-      font-size: 16px;
+      font-size: 40px;
     }
     textarea {
       width: 100%;
@@ -32,34 +27,33 @@
     button {
       padding: 10px 20px;
       font-size: 16px;
-      margin: 10px 0;
+      margin: 6px 4px;
       cursor: pointer;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
+      /* margin-top: 15px; */
       background: white;
     }
     th, td {
-      border: 1px solid #ddd;
       padding: 8px;
       text-align: left;
+      box-shadow: inset 1px 0 0 0 #ccc, inset 0 1px 0 #ccc;
     }
     th {
       background: #eee;
     }
     #grtIdInput {
       width: 250px;
-      height: 20px;
+      height: 29px;
       font-family: monospace;
       font-size: 14px;
-      resize: none;
-      padding: 8px;
+      /* padding: 8px; */
     }
     #siteIdInput {
-      width: 200px;
-      height: 40px;
+      width: 220px;
+      height: 36px;
       font-family: sans-serif;
       font-size: 14px;
     }
@@ -67,19 +61,19 @@
       height: 45px;
     }
     .excel-icon-btn {
-    margin: auto;
-    position: absolute;
-    background: none;
-    border: none;
-    justify-content: center;   /* 이미지 가운데 정렬 */
-    align-items: center;
-    border-radius: 20%;
-    padding: 0;
+      margin: auto;
+      position: relative;
+      background: none;
+      border: none;
+      justify-content: center;
+      align-items: center;
+      border-radius: 20%;
+      padding: 0;
     }
     .excel-icon-btn img {
-    width: 55px;               /* 이미지 크기 줄이기 */
-    height: 55px;
-    margin: 5px;
+      width: 40px;
+      height: 40px;
+      margin: 2px;
     }
     #message {
       display:none; 
@@ -94,21 +88,46 @@
       font-size: 14px;
       font-weight: 600;
       padding: 10px 16px;
-      border-radius: 10px;
+      border-radius: 5px;
+      border: none;
       text-decoration: none;
-      background: linear-gradient(180deg, #ddd 0%, #ccc 100%);
+      background: linear-gradient(180deg, #ccc 0%, #aaa 100%);
       color: #fff;
       box-shadow: 0 6px 18px rgba(21, 101, 216, 0.12);
       transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
     }
     .btn-primary:hover{ 
-      /* transform: translateY(-2px);  */
-      filter: brightness(.98); 
+      filter: brightness(.92); 
     }
-    .btn-primary:active{ 
-      transform: translateY(0); 
-      box-shadow: 0 4px 12px rgba(21,101,216,0.14); 
+    .small {
+      height: 34px;
+      font-size: 13px;
+      padding: 6px 10px;
     }
-    .btn-primary:focus{ 
-      outline: none; box-shadow: 0 0 0 6px rgba(21,101,216,0.14); 
+    .controls { 
+      margin-top: 12px; 
+      display:flex; 
+      gap:8px; 
+      align-items:center; 
+      flex-wrap:wrap; 
+    }
+    #parsedTable thead th {
+      position: sticky;
+      top: 0;          
+      background: #f1f1f1; 
+      z-index: 2;
+    }
+    #parsedTableContainer { 
+      max-height: 300px; 
+      overflow: auto; 
+      margin-top:10px; 
+      border:1px solid #ccc; 
+    }
+    #output { white-space: pre-wrap; 
+      background: #fff; 
+      padding: 10px; 
+      border-radius:6px; 
+      border:1px solid #ddd; 
+      max-height: 300px; 
+      overflow:auto; 
     }

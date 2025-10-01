@@ -2,40 +2,62 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>DataFormatCheck_1.5.1</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <title>GractorAPI_1.0.0</title>
+  <link rel="stylesheet" href="css/gri.css"/>
 </head>
-<link rel="stylesheet">
 <body oncontextmenu="return false;">
-    <div class="header">
-      <h2>그렉터 API 데이터 확인</h2>
-      <a href="https://ntmore.kr/"><img src="https://ntmore.kr/images/kor06r-22-0459/common/top_logo_on.png" alt="Logo"></a>
+  <div class="header">
+    <h2>그렉터 API 데이터</h2>
+    <a href="https://ntmore.kr/"><img src="https://ntmore.kr/images/kor06r-22-0459/common/top_logo_on.png" alt="Logo"></a>
+  </div>
+  <br>
+  <div style="display:flex; align-items:flex-start; gap:16px;">
+    <!-- IMEI 영역 -->
+    <div style="display:flex; flex-direction:column;">
+      <label for="grtIdInput">IMEI</label>
+      <input id="grtIdInput" placeholder="IMEI(예: 865343071819914)" />
+  </div>
+    <!-- 지자체 영역 -->
+    <div style="display:flex; flex-direction:column;">
+      <label for="siteIdInput">지자체</label>
+      <select id="siteIdInput">
+        <option value="gochang">고창군</option>
+        <option value="gunpo">군포시</option>
+        <option value="gimje">김제시</option>
+        <option value="gimhae">김해시</option>
+        <option value="namhae">남해군</option>
+        <option value="busan">부산시</option>
+        <option value="asan">아산시</option>
+        <option value="yangsan">양산시</option>
+        <option value="yeoncheon">연천군</option>
+        <option value="uijeongbu">의정부시</option>
+        <option value="hadong">하동군</option>
+        <option value="haman">함안군</option>
+      </select>
     </div>
-    <textarea id="grtIdInput" placeholder="IMEI(예: 865343071819914)"></textarea>
-    <span id="urlDisplay" style="position: absolute; margin-left: 5px;"></span><br>
-    <select id="siteIdInput">
-      <option value="gochang">고창군</option>
-      <option value="gunpo">군포시</option>
-      <option value="gimje">김제시</option>
-      <option value="gimhae">김해시</option>
-      <option value="namhae">남해군</option>
-      <option value="busan">부산시</option>
-      <option value="asan">아산시</option>
-      <option value="yangsan">양산시</option>
-      <option value="yeoncheon">연천군</option>
-      <option value="uijeongbu">의정부시</option>
-      <option value="hadong">하동군</option>
-      <option value="haman">함안군</option>
-    </select><br>
-    <div class="input-row">
-      <button id="fetchBtn">데이터 가져오기</button>
-      <button onclick="downloadExcel()" class="excel-icon-btn" title="Export">
-      <img src="https://img.icons8.com/?size=100&id=13654&format=png&color=000000">
-      </button>
-      <pre id="output"></pre>
-    </div>
-    <br>
-  <script src="js/gri.js"></script>
+  </div>
+  <div class="controls">
+    <button id="fetchBtn" class="btn-primary small">데이터 호출하기</button>
+    <label style="display:inline-flex; align-items:center; gap:8px;">
+      <input type="file" id="excelInput" accept=".xlsx,.xls,.csv" />
+      <span style="font-size:13px;">"Excel 목록 전체 호출" 진행 후 "데이터 다운로드"가 가능합니다.</span>
+    </label>
+    <button id="fetchAllBtn" class="btn-primary small">Excel 목록 전체 호출</button>
+    <button id="downloadAllResults" class="btn-primary small">호출된 데이터 다운로드</button>
+    <button class="btn-primary small" onclick="downloadTemplate()">Import 양식 다운로드</button>
+  </div>
+  <span id="urlDisplay" style="display:block; margin-top:8px;"></span>
+  <pre id="output"></pre>
+  <div id="parsedTableContainer">
+    <table id="parsedTable">
+      <thead>
+        <tr><th>#</th><th>지자체</th><th>IMEI</th><th>동작</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="js/gri.js"></script>
 </body>
 </html>
