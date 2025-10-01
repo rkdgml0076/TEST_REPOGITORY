@@ -46,7 +46,6 @@ function downloadTemplate() {
     XLSX.writeFile(wb, "import_template.xlsx");
 }
 
-// 기존 버튼 동작 재사용
 document.getElementById('fetchBtn').addEventListener('click', async () => {
   const grtId = document.getElementById('grtIdInput').value.trim();
   const siteId = document.getElementById('siteIdInput').value.trim();
@@ -57,7 +56,6 @@ document.getElementById('fetchBtn').addEventListener('click', async () => {
   await fetchDataFor(grtId, siteId);
 });
 
-// Excel 읽기/파싱
 document.getElementById('excelInput').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -66,12 +64,10 @@ document.getElementById('excelInput').addEventListener('change', function(e) {
     const data = new Uint8Array(ev.target.result);
     const wb = XLSX.read(data, { type: 'array' });
     const sheet = wb.Sheets[wb.SheetNames[0]];
-    const raw = XLSX.utils.sheet_to_json(sheet, { defval: '' }); // 배열 of objects
-    // 표준화: 가능한 헤더 이름들 매핑
+    const raw = XLSX.utils.sheet_to_json(sheet, { defval: '' });
     const imeiKeys = ['imei','IMEI','grtId','grt_id','grt id','grt','grtid','grtId'];
     const siteKeys = ['site','siteId','site_id','site id','지자체','siteid','site_id','siteName','site_name','site name'];
     parsedRows = raw.map((row, idx) => {
-      // find imei field
       let imeiVal = '';
       let siteVal = '';
       for (const k of Object.keys(row)) {
@@ -99,7 +95,6 @@ document.getElementById('excelInput').addEventListener('change', function(e) {
   reader.readAsArrayBuffer(file);
 });
 
-// 테이블 렌더링 (Set & Fetch 버튼으로 변경)
 function renderParsedTable() {
   const tbody = document.querySelector('#parsedTable tbody');
   tbody.innerHTML = '';
@@ -123,7 +118,6 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});
 }
 
-// 합쳐진 동작: inputs에 채우고 즉시 fetch 호출
 async function setAndFetch(idx) {
   const row = parsedRows[idx];
   if (!row) { alert("해당 행을 찾을 수 없습니다."); return; }
@@ -158,7 +152,6 @@ async function setAndFetch(idx) {
   await fetchDataFor(imei, finalSite);
 }
 
-// Fetch All: parsedRows 전체에 대해 순차 호출
 document.getElementById('fetchAllBtn').addEventListener('click', async () => {
   if (!parsedRows || parsedRows.length === 0) { alert("선택된 Excel 파일이 없습니다."); return; }
   if (!confirm(`총 ${parsedRows.length}건을 순차적으로 호출합니다. 진행할까요?`)) return;
@@ -171,7 +164,6 @@ document.getElementById('fetchAllBtn').addEventListener('click', async () => {
       nodesDataList.push({ inputGrt: imei, inputSite: site, error: 'IMEI missing' });
       continue;
     }
-    // map site to select value if possible
     const select = document.getElementById('siteIdInput');
     let finalSite = site;
     let found = false;
@@ -188,7 +180,6 @@ document.getElementById('fetchAllBtn').addEventListener('click', async () => {
   alert('데이터 호출 완료. 결과는 "API 전체 조회 데이터 다운로드"로 엑셀 저장하세요.');
 });
 
-// Download combined results (nodesDataList) as Excel
 document.getElementById('downloadAllResults').addEventListener('click', () => {
   if (!nodesDataList || nodesDataList.length === 0) { alert('저장할 결과가 없습니다. 먼저 호출을 진행하세요.'); return; }
   const flat = nodesDataList.map((item, idx) => {
@@ -208,7 +199,6 @@ document.getElementById('downloadAllResults').addEventListener('click', () => {
   XLSX.writeFile(wb, `AllResults_${dateStr}.xlsx`);
 });
 
-// 기존 Export (latestNodesData 또는 nodesDataList)
 function downloadExcel() {
   let payload = null;
   if (nodesDataList && nodesDataList.length > 0) {
@@ -237,10 +227,3 @@ function downloadExcel() {
   const dateStr = now.toISOString().slice(0, 19).replace(/[-T:]/g, '');
   XLSX.writeFile(wb, `nodesData_${dateStr}.xlsx`);
 }
-
-// 유틸: (브라우저 콘솔에서 간단 확인용)
-window._debug = {
-  parsedRows,
-  nodesDataList,
-  latestNodesData
-};
