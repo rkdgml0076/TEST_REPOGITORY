@@ -5,12 +5,12 @@ document.addEventListener('keydown', function (e) {
   if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); alert('Error'); }
 });
 
-// ³»ºÎ »óÅÂ
-let latestNodesData = null; // °¡Àå ÃÖ±Ù È£Ãâ °á°ú
-let nodesDataList = [];     // ¿©·¯ È£Ãâ °á°ú ´©Àû (Fetch All¿ë)
-let parsedRows = [];        // Excel¿¡¼­ ÀĞ¾î¿Â {siteId, grtId} ¹è¿­
+// ë‚´ë¶€ ìƒíƒœ
+let latestNodesData = null; // ê°€ì¥ ìµœê·¼ í˜¸ì¶œ ê²°ê³¼
+let nodesDataList = [];     // ì—¬ëŸ¬ í˜¸ì¶œ ê²°ê³¼ ëˆ„ì  (Fetch Allìš©)
+let parsedRows = [];        // Excelì—ì„œ ì½ì–´ì˜¨ {siteId, grtId} ë°°ì—´
 
-// °øÅë: API È£Ãâ ÇÔ¼ö (grtId, siteId ¹ŞÀ½)
+// ê³µí†µ: API í˜¸ì¶œ í•¨ìˆ˜ (grtId, siteId ë°›ìŒ)
 async function fetchDataFor(grtId, siteId) {
   const url = `https://dfm-ct.watergrid.kr/api?grtId=${encodeURIComponent(grtId)}&siteId=${encodeURIComponent(siteId)}`;
   document.getElementById("urlDisplay").innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
@@ -18,31 +18,31 @@ async function fetchDataFor(grtId, siteId) {
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const result = await resp.json();
-    // ÃÖ±Ù °á°ú ÀúÀå
+    // ìµœê·¼ ê²°ê³¼ ì €ì¥
     latestNodesData = { inputGrt: grtId, inputSite: siteId, result };
-    // ´©Àû ¸®½ºÆ®¿¡µµ ÀúÀå
+    // ëˆ„ì  ë¦¬ìŠ¤íŠ¸ì—ë„ ì €ì¥
     nodesDataList.push(latestNodesData);
-    // È­¸é Ãâ·Â(°£´Ü)
+    // í™”ë©´ ì¶œë ¥(ê°„ë‹¨)
     document.getElementById("output").textContent = JSON.stringify(latestNodesData, null, 2);
     return latestNodesData;
   } catch (err) {
-    alert("µ¥ÀÌÅÍ¸¦ ºÒ·¯¿À´Â Áß ¿À·ù ¹ß»ı: " + err.message);
+    alert("ë°ì´í„°ë¥¼ ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘ ì˜¤ë¥˜ ë°œìƒ: " + err.message);
     return { inputGrt: grtId, inputSite: siteId, error: err.message };
   }
 }
 
 function downloadTemplate() {
-    // ¿¢¼¿ ½ÃÆ® µ¥ÀÌÅÍ (Çì´õ¸¸ ¼³Á¤)
+    // ì—‘ì…€ ì‹œíŠ¸ ë°ì´í„° (í—¤ë”ë§Œ ì„¤ì •)
     let worksheetData = [
-    ["IMEI", "ÁöÀÚÃ¼"]  // Ã¹ ¹øÂ° Çà: Çì´õ
+    ["IMEI", "ì§€ìì²´"]  // ì²« ë²ˆì§¸ í–‰: í—¤ë”
     ];
 
-    // ¿öÅ©½ÃÆ®¿Í ¿öÅ©ºÏ »ı¼º
+    // ì›Œí¬ì‹œíŠ¸ì™€ ì›Œí¬ë¶ ìƒì„±
     let ws = XLSX.utils.aoa_to_sheet(worksheetData);
     let wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "ImportTemplate");
 
-    // ÆÄÀÏ ´Ù¿î·Îµå
+    // íŒŒì¼ ë‹¤ìš´ë¡œë“œ
     XLSX.writeFile(wb, "import_template.xlsx");
 }
 
@@ -50,7 +50,7 @@ document.getElementById('fetchBtn').addEventListener('click', async () => {
   const grtId = document.getElementById('grtIdInput').value.trim();
   const siteId = document.getElementById('siteIdInput').value.trim();
   if (!grtId || !siteId) {
-    alert("IMEI¿Í ÁöÀÚÃ¼¸¦ ÀÔ·Â/¼±ÅÃÇÏ¼¼¿ä.");
+    alert("IMEIì™€ ì§€ìì²´ë¥¼ ì…ë ¥/ì„ íƒí•˜ì„¸ìš”.");
     return;
   }
   await fetchDataFor(grtId, siteId);
@@ -66,7 +66,7 @@ document.getElementById('excelInput').addEventListener('change', function(e) {
     const sheet = wb.Sheets[wb.SheetNames[0]];
     const raw = XLSX.utils.sheet_to_json(sheet, { defval: '' });
     const imeiKeys = ['imei','IMEI','grtId','grt_id','grt id','grt','grtid','grtId'];
-    const siteKeys = ['site','siteId','site_id','site id','ÁöÀÚÃ¼','siteid','site_id','siteName','site_name','site name'];
+    const siteKeys = ['site','siteId','site_id','site id','ì§€ìì²´','siteid','site_id','siteName','site_name','site name'];
     parsedRows = raw.map((row, idx) => {
       let imeiVal = '';
       let siteVal = '';
@@ -105,14 +105,14 @@ function renderParsedTable() {
       <td>${escapeHtml(r.site)}</td>
       <td>${escapeHtml(r.imei)}</td>
       <td>
-        <button class="btn-primary small" data-idx="${i}" onclick="setAndFetch(${i})">µ¥ÀÌÅÍ È£ÃâÇÏ±â</button>
+        <button class="btn-primary small" data-idx="${i}" onclick="setAndFetch(${i})">ë°ì´í„° í˜¸ì¶œí•˜ê¸°</button>
       </td>
     `;
     tbody.appendChild(tr);
   });
 }
 
-// ¾ÈÀüÇÑ HTML ¿£Æ¼Æ¼ Ã³¸®
+// ì•ˆì „í•œ HTML ì—”í‹°í‹° ì²˜ë¦¬
 function escapeHtml(s) {
   if (s === undefined || s === null) return '';
   return String(s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});
@@ -120,11 +120,11 @@ function escapeHtml(s) {
 
 async function setAndFetch(idx) {
   const row = parsedRows[idx];
-  if (!row) { alert("ÇØ´ç ÇàÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù."); return; }
+  if (!row) { alert("í•´ë‹¹ í–‰ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤."); return; }
 
-  // 1) inputs¿¡ Ã¤¿ì±â
+  // 1) inputsì— ì±„ìš°ê¸°
   document.getElementById('grtIdInput').value = row.imei || '';
-  // site ¼¿·ºÆ® ¸ÅÇÎ ½Ãµµ
+  // site ì…€ë ‰íŠ¸ ë§¤í•‘ ì‹œë„
   const select = document.getElementById('siteIdInput');
   let setted = false;
   if (row.site) {
@@ -142,19 +142,19 @@ async function setAndFetch(idx) {
     }
   }
 
-  // 2) fetch È£Ãâ (site ¸ÅÇÎ ½ÇÆĞ ½Ã selectÀÇ ÇöÀç°ª »ç¿ë)
+  // 2) fetch í˜¸ì¶œ (site ë§¤í•‘ ì‹¤íŒ¨ ì‹œ selectì˜ í˜„ì¬ê°’ ì‚¬ìš©)
   let finalSite = setted ? select.options[select.selectedIndex].value : (row.site || select.value);
   const imei = row.imei || document.getElementById('grtIdInput').value;
   if (!imei || !finalSite) {
-    alert("IMEI ¶Ç´Â ÁöÀÚÃ¼ °ªÀÌ ¾ø½À´Ï´Ù. Excel µ¥ÀÌÅÍ¸¦ È®ÀÎÇÏ¼¼¿ä.");
+    alert("IMEI ë˜ëŠ” ì§€ìì²´ ê°’ì´ ì—†ìŠµë‹ˆë‹¤. Excel ë°ì´í„°ë¥¼ í™•ì¸í•˜ì„¸ìš”.");
     return;
   }
   await fetchDataFor(imei, finalSite);
 }
 
 document.getElementById('fetchAllBtn').addEventListener('click', async () => {
-  if (!parsedRows || parsedRows.length === 0) { alert("¼±ÅÃµÈ Excel ÆÄÀÏÀÌ ¾ø½À´Ï´Ù."); return; }
-  if (!confirm(`ÃÑ ${parsedRows.length}°ÇÀ» ¼øÂ÷ÀûÀ¸·Î È£ÃâÇÕ´Ï´Ù. ÁøÇàÇÒ±î¿ä?`)) return;
+  if (!parsedRows || parsedRows.length === 0) { alert("ì„ íƒëœ Excel íŒŒì¼ì´ ì—†ìŠµë‹ˆë‹¤."); return; }
+  if (!confirm(`ì´ ${parsedRows.length}ê±´ì„ ìˆœì°¨ì ìœ¼ë¡œ í˜¸ì¶œí•©ë‹ˆë‹¤. ì§„í–‰í• ê¹Œìš”?`)) return;
   nodesDataList = [];
   for (let i=0;i<parsedRows.length;i++){
     const r = parsedRows[i];
@@ -177,53 +177,64 @@ document.getElementById('fetchAllBtn').addEventListener('click', async () => {
     }
     const res = await fetchDataFor(imei, finalSite);
   }
-  alert('µ¥ÀÌÅÍ È£Ãâ ¿Ï·á. °á°ú´Â "API ÀüÃ¼ Á¶È¸ µ¥ÀÌÅÍ ´Ù¿î·Îµå"·Î ¿¢¼¿ ÀúÀåÇÏ¼¼¿ä.');
+  alert('ë°ì´í„° í˜¸ì¶œ ì™„ë£Œ. ê²°ê³¼ëŠ” "API ì „ì²´ ì¡°íšŒ ë°ì´í„° ë‹¤ìš´ë¡œë“œ"ë¡œ ì—‘ì…€ ì €ì¥í•˜ì„¸ìš”.');
 });
 
 document.getElementById('downloadAllResults').addEventListener('click', () => {
-  if (!nodesDataList || nodesDataList.length === 0) { alert('ÀúÀåÇÒ °á°ú°¡ ¾ø½À´Ï´Ù. ¸ÕÀú È£ÃâÀ» ÁøÇàÇÏ¼¼¿ä.'); return; }
-  const flat = nodesDataList.map((item, idx) => {
+  if (!nodesDataList || nodesDataList.length === 0) { alert('ì €ì¥í•  ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤. ë¨¼ì € í˜¸ì¶œì„ ì§„í–‰í•˜ì„¸ìš”.'); return; }
+ const flat = nodesDataList.map((item, idx) => {
+  const nodes = item.result?.nodes || {};
+
     return {
       idx: idx + 1,
-      inputSite: item.inputSite,
-      inputGrt: item.inputGrt,
       error: item.error || '',
-      result_json: item.result ? JSON.stringify(item.result) : ''
+      ì§€ìì²´: item.inputSite || '',
+      IMEI: item.inputGrt || '',
+      IMSI: nodes.imsi || '',
+      // result.nodes ì•ˆì—ì„œ ë½‘ì•„ì˜¤ê¸°
+      ê²€ì¹¨ë‚ ì§œ: nodes.date || '',
+      ì¼ë ¨ë²ˆí˜¸: nodes.msrNo || '',
+      RSRP: nodes.rsrp ?? '',
+      ê²€ì¹¨ê°’: nodes.msrValue ?? '',
+      ê³„ëŸ‰ê¸°ë²ˆí˜¸: nodes.meterNo || '', 
+
+      // result_json: item.result ? JSON.stringify(item.result) : '',
     };
   });
-  const ws = XLSX.utils.json_to_sheet(flat);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'AllResults');
-  const now = new Date();
-  const dateStr = now.toISOString().slice(0, 19).replace(/[-T:]/g, '');
-  XLSX.writeFile(wb, `AllResults_${dateStr}.xlsx`);
+    const ws = XLSX.utils.json_to_sheet(flat);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'AllResults');
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 19).replace(/[-T:]/g, '');
+    XLSX.writeFile(wb, `AllResults_${dateStr}.xlsx`);
 });
 
 function downloadExcel() {
   let payload = null;
   if (nodesDataList && nodesDataList.length > 0) {
     payload = nodesDataList.map((item, idx) => ({
-      idx: idx + 1,
-      inputSite: item.inputSite,
-      inputGrt: item.inputGrt,
-      error: item.error || '',
-      result_json: item.result ? JSON.stringify(item.result) : ''
-    }));
-  } else if (latestNodesData) {
-    payload = [{
-      inputSite: latestNodesData.inputSite,
-      inputGrt: latestNodesData.inputGrt,
-      result_json: latestNodesData.result ? JSON.stringify(latestNodesData.result) : ''
-    }];
-  } else {
-    alert("¸ÕÀú µ¥ÀÌÅÍ¸¦ °¡Á®¿À¼¼¿ä.");
-    return;
-  }
+    idx: idx + 1,
+    error: item.error || '',
+    ì§€ìì²´: item.inputSite || '',
+    IMEI: item.inputGrt || '',
+    IMSI: nodes.imsi || '',
+    // result.nodes ì•ˆì—ì„œ ë½‘ì•„ì˜¤ê¸°
+    ê²€ì¹¨ë‚ ì§œ: nodes.date || '',
+    ì¼ë ¨ë²ˆí˜¸: nodes.msrNo || '',
+    RSRP: nodes.rsrp ?? '',
+    ê²€ì¹¨ê°’: nodes.msrValue ?? '',
+    ê³„ëŸ‰ê¸°ë²ˆí˜¸: nodes.meterNo || '',
 
-  const ws = XLSX.utils.json_to_sheet(payload);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "NodesData");
-  const now = new Date();
-  const dateStr = now.toISOString().slice(0, 19).replace(/[-T:]/g, '');
-  XLSX.writeFile(wb, `nodesData_${dateStr}.xlsx`);
+    // result_json: item.result ? JSON.stringify(item.result) : '',
+    }));
+    } else if (latestNodesData) {
+      payload = [{
+        inputSite: latestNodesData.inputSite,
+        inputGrt: latestNodesData.inputGrt,
+        result_json: latestNodesData.result ? JSON.stringify(latestNodesData.result) : ''
+      }];
+    } else {
+      alert("ë¨¼ì € ë°ì´í„°ë¥¼ ê°€ì ¸ì˜¤ì„¸ìš”.");
+      return;
+    }
 }
